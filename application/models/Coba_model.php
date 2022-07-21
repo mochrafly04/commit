@@ -1,0 +1,31 @@
+<?php
+
+class Coba_model extends CI_Model {
+    public function get_data($table)
+    {
+        return $this->db->get($table);
+    }
+
+    public function insert_data($data)
+    {
+        $this->db->insert('tbl_coba', $data);
+    }
+
+    public function get_data_by_id($id)
+    {
+        return $this->db->get_where('tbl_coba', ['id' => $id])->row_array();
+    }
+
+    public function delete_data($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('tbl_coba');
+    }
+
+    public function update_data()
+    {
+        $data = array(
+            'nama_dokumen'=>$this->input->post('nama_dokumen', true)
+        );
+    }
+}
