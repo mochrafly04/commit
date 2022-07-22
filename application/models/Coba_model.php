@@ -1,6 +1,7 @@
 <?php
 
-class Coba_model extends CI_Model {
+class Coba_model extends CI_Model
+{
     public function get_data($table)
     {
         return $this->db->get($table);
@@ -25,7 +26,12 @@ class Coba_model extends CI_Model {
     public function update_data()
     {
         $data = array(
-            'nama_dokumen'=>$this->input->post('nama_dokumen', true)
+            'dokumen' => $this->input->post('dokumen', true),
+            'jenis_dokumen' => $this->input->post('jenis_dokumen', true),
+            'nama_dokumen' => $this->input->post('nama_dokumen', true),
+            'keterangan' => $this->input->post('keterangan', true),
         );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('tbl_coba', $data);
     }
 }

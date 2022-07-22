@@ -24,40 +24,41 @@ class Kelola extends CI_Controller
 
 	public function tambah()
 	{
-		// var_dump($this->form_validation->run());
+		$this->form_validation->set_rules('jenis_dokumen', 'Jenis Dokumen', 'required');
+		$this->form_validation->set_rules('nama_dokumen', 'Nama Dokumen', 'required');
+		$this->form_validation->set_rules('keterangan', 'Keterangan', 'required');
 
-		$config['upload_path']          = './file/';
-		$config['allowed_types']        = 'gif|jpg|png|jpeg|doc|pdf';
-		$config['max_size']             = 50000;
-		$this->upload->initialize($config);
-		if (!$this->upload->do_upload('jenis_dokumen')) {
-			$data = array(
-				'title' => 'TAMBAH DATA',
-				'isi' => 'kelola/v_tambah',
-			);
-			$this->load->view('template/wraper', $data, FALSE);
-			$test = 1;
-		} else {
-			$upload_data = array('uploads' => $this->upload->data());
-			$config['image_library'] = 'gd2';
-			$config['source_image'] = './file/' . $upload_data['uploads']['file_name'];
-			$this->load->library('image_lib', $config);
-			$data = array(
-				'jenis_dokumen' => $upload_data['uploads']['file_name'],
-				'nama_dokumen' => $this->input->post('nama_dokumen'),
-				'keterangan' => $this->input->post('keterangan'),
-			);
-			$this->Coba_model->insert_data($data);
-			$this->session->set_flashdata('flash', 'Ditambahkan');
-			redirect('kelola');
-			$test = 2;
+		if ($this->form_validation->run() == TRUE) {
+			$config['upload_path']          = './file/';
+			$config['allowed_types']        = 'gif|jpg|png|jpeg|doc|pdf';
+			$config['max_size']             = 50000;
+			$this->upload->initialize($config);
+			if (!$this->upload->do_upload('dokumen')) {
+				$data = array(
+					'title' => 'TAMBAH DATA',
+					'isi' => 'kelola/v_tambah',
+				);
+				$this->load->view('template/wraper', $data, FALSE);
+			} else {
+				$upload_data = array('uploads' => $this->upload->data());
+				$config['image_library'] = 'gd2';
+				$config['source_image'] = './file/' . $upload_data['uploads']['file_name'];
+				$this->load->library('image_lib', $config);
+				$data = array(
+					'dokumen' => $upload_data['uploads']['file_name'],
+					'jenis_dokumen' => $this->input->post('jenis_dokumen'),
+					'nama_dokumen' => $this->input->post('nama_dokumen'),
+					'keterangan' => $this->input->post('keterangan'),
+				);
+				$this->Coba_model->insert_data($data);
+				$this->session->set_flashdata('flash', 'Ditambahkan');
+				redirect('kelola');
+			}
 		}
-
 		$data = array(
 			'title' => 'TAMBAH DATA',
 			'isi' => 'kelola/v_tambah',
 		);
-		// var_dump($test);
 		$this->load->view('template/wraper', $data, FALSE);
 	}
 
@@ -73,11 +74,13 @@ class Kelola extends CI_Controller
 	{
 		$data = array(
 			'title' => 'EDIT DATA',
-			'isi' => 'kelola/edit',
+			'isi' => 'kelola/v_edit',
 		);
 
 		$data['tbl_coba'] = $this->Coba_model->get_data_by_id($id);
+		$data['jenis_dokumen'] = ['Png', 'Jpg', 'Doc', 'Pdf', 'Xls'];
 
+		$this->form_validation->set_rules('nama_dokumen', 'Nama Dokumen', 'required');
 		if ($this->form_validation->run() == FALSE) {
 			$this->load->view('template/wraper', $data, FALSE);
 		} else {
@@ -86,5 +89,9 @@ class Kelola extends CI_Controller
 			redirect('kelola');
 		}
 		$this->load->view('template/wraper', $data, FALSE);
+	}
+
+	public function detail()
+	{
 	}
 }
